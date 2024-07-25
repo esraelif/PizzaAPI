@@ -72,15 +72,16 @@ app.all('/', (req, res) => {
 })
 
 // routes/index.js:
-app.use(require('./src/routes/'))//* default yazmadığımızda kök route u esas alır.
+//app.use(require('./src/routes/'))
+//* default yazmadığımızda kök route u esas alır.
 app.use('/', require('./src/routes/'))
 
 //* eşleşmeyen routeları yakalar
 app.use((req, res, next) => {
-  res.status(404).send({
-    error: true,
-    message: "Route not found!",
-  });
+    res.status(404).send({
+        error: true,
+        message: "Route not found!",
+    });
 });
 
 /* ------------------------------------------------------- */

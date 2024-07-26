@@ -24,4 +24,4 @@ const TokenSchema = new mongoose.Schema({
     timestamps: false
 })
 
-module.exports = moongose.model('Token', TokenSchema)
+module.exports = mongoose.model('Token', TokenSchema)

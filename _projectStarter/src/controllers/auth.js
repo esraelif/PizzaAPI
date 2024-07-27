@@ -11,7 +11,7 @@ module.exports = {
     login: async (req, res) => {
         const { username, email, password } = req.body
         if (password && (username || email)) {
-            const user = await User.findOne({ $or: [{ email }, { password }] })
+            const user = await User.findOne({ $or: [{ email }, { username }] })
             if (user && user.password == passwordEncrypt(password)) {
                 if (user.isActive) {
                     let tokenData = await Token.findOne({ userId: user._id })
@@ -24,17 +24,32 @@ module.exports = {
                     res.status(200).send({
                         error: false,
                         token: tokenData.token,
-                        user
+                        user,
                     })
                 } else {
                     throw new CustomError('This account is inactive!', 401)
                 }
             } else {
-                throw new Error('Wrong username*passwor or email', 401)
+                throw new Error('Wrong username*password or email', 401)
             }
         } else {
             throw new CustomError('Please enter username/email and password ', 401)
         }
     },
-    logout: async (req, res) => { }
+    logout: async (req, res) => {
+        const auth = req.headers?.authorization
+        const tokenKey = auth ? auth.split(' ') : null
+        let deleted = null
+        if (tokenKey && tokenKey[0] == 'Token') {
+            deleted = await Token.deleteOne({ token: tokenKey[1] })
+        }
+        res.status(deleted?.deletedCount > 0 ? 200 : 400).send({
+            error: !deleted?.deletedCount,
+            deleted,
+            message: deleted?.deletedCount > 0 ? "logout ok" : "logout failed"
+        })
+
+
+
+    }
 }

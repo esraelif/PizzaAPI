@@ -14,6 +14,7 @@ module.exports = {
     },
     //CRUD
     create: async (req, res) => {
+        //delete req.body.amount amount alanını db ye eklememek için
         const data = await Order.create(req.body)
         res.status(201).send({
             error: false,
@@ -28,6 +29,7 @@ module.exports = {
         })
     },
     update: async (req, res) => {
+        //delete req.body.amount amount alanını db ye eklememek için,amount hesaplamasını getters ile yapıyoruz.
         const data = await Order.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
         res.status(202).send({
             error: false,

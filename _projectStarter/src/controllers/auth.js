@@ -77,6 +77,30 @@ module.exports = {
             throw new CustomError('Please enter username/email and password ', 401)
         }
     },
+    refresh: async (req, res) => {
+        const refreshToken = req.body?.bearer.refresh
+        if (refreshToken) {
+            const refreshData = jwt.verify(refreshToken, process.env.REFRESH_KEY)
+            if (refreshData) {
+                const user = await User.findOne({ _id: refreshData._id })
+                if (user && user.password == refreshData.password) {
+                    res.status(200).send({
+                        error: false,
+                        bearer: {
+                            access: jwt.sign(user.toJSON(), process.env.ACCESS_KEY, { expiresIn: process.env.ACCESS_EXP })
+                        }
+
+                    })
+                } else {
+                    throw new CustomError("Wrong Data", 401)
+                }
+            } else {
+                throw new CustomError("refresh data is wrong!", 401)
+            }
+        } else {
+            throw new CustomError("Please enter refresh token!", 401)
+        }
+    },
     logout: async (req, res) => {
         const auth = req.headers?.authorization
         const tokenKey = auth ? auth.split(' ') : null

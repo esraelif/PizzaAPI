@@ -5,7 +5,11 @@
 const Order = require("../models/order")
 module.exports = {
     list: async (req, res) => {
-        const data = await res.getModelList(Order)
+        let customFilter = {}
+        if (!req.user.isAdmin) {
+            customFilter = { userId: req.user._id }
+        }
+        const data = await res.getModelList(Order, customFilter)
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails,
@@ -15,6 +19,10 @@ module.exports = {
     //CRUD
     create: async (req, res) => {
         //delete req.body.amount amount alanını db ye eklememek için
+        if (!req.user.isAdmin) {
+            req.body.userId = req.user._id //*istek atan user
+        }
+
         const data = await Order.create(req.body)
         res.status(201).send({
             error: false,

@@ -9,7 +9,7 @@ module.exports = {
         if (!req.user.isAdmin) {
             customFilter = { userId: req.user._id }
         }
-        const data = await res.getModelList(Order, customFilter)
+        const data = await res.getModelList(Order, customFilter, ["userId", { path: "pizzaId", select: "-__v", populate: { path: "toppingIds", select: "name" } }])
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails,
@@ -30,7 +30,8 @@ module.exports = {
         })
     },
     read: async (req, res) => {
-        const data = await Order.findOne({ _id: req.params.id })
+        let customFilter = {}
+        const data = await Order.findOne({ _id: req.params.id, ...customFilter }).populate("userId", "pizzaId")
         res.status(200).send({
             error: false,
             data

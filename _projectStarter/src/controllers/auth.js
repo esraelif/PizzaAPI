@@ -107,12 +107,18 @@ module.exports = {
         let deleted = null
         if (tokenKey && tokenKey[0] == 'Token') {
             deleted = await Token.deleteOne({ token: tokenKey[1] })
+            res.status(deleted?.deletedCount > 0 ? 200 : 400).send({
+                error: !deleted?.deletedCount,
+                deleted,
+                message: deleted?.deletedCount > 0 ? "logout ok" : "logout failed"
+            })
+        } else {
+            res.send({
+                error: false,
+                message: "Logout ok!"
+            })
         }
-        res.status(deleted?.deletedCount > 0 ? 200 : 400).send({
-            error: !deleted?.deletedCount,
-            deleted,
-            message: deleted?.deletedCount > 0 ? "logout ok" : "logout failed"
-        })
+
 
 
 

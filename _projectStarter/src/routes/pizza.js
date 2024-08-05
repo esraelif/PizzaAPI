@@ -6,7 +6,7 @@ const router = require('express').Router()
 /* ------------------------------------------------------- */
 const pizza = require("../controllers/pizza")
 const idValidation = require("../middlewares/idValidation")
-const isAdmin = require("../middlewares/permissions")
+const { isAdmin } = require("../middlewares/permissions")
 //*  /pizza
 router.route('/').get(pizza.list).post(isAdmin, pizza.create)
 router.route('/:id').all(idValidation).get(pizza.read).put(isAdmin, pizza.update).patch(isAdmin, pizza.update).delete(isAdmin, pizza.delete)

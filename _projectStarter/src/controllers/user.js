@@ -1,4 +1,5 @@
 "use strict"
+const { CustomError } = require("../errors/customError")
 /* -------------------------------------------------------
     NODEJS EXPRESS | CLARUSWAY FullStack Team
 ------------------------------------------------------- */
@@ -22,14 +23,37 @@ module.exports = {
         })
     },
     read: async (req, res) => {
+        //admin değilse kullanıcıya kendi bilgilerini gönder
+        // let customFilter = {}
+        // if (!req.user.isAdmin) {
+        //     customFilter = { _id: req.user._id }
+        // } else {
+        //     customFilter = { _id: req.params.id }
+        // }
+        // const data = await User.findOne(customFilter)
+        // admin değilse ve istediği bilgiler kendine ait değilse kullanıcıya hata mesajı gönder
+        let customFilter = {}
+        if (!req.body.isAdmin) {
+            if (req.body._id !== req.params.id) {
+                throw new CustomError("No permisson! You must be admin or own")
+            }
+        }
         const data = await User.findOne({ _id: req.params.id })
+
+
         res.status(200).send({
             error: false,
             data
         })
     },
     update: async (req, res) => {
-        const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+        let customFilter = {}
+        if (!req.user.isAdmin) {
+            customFilter = { _id: req.user._id }
+        } else {
+            customFilter = { _id: req.params.id }
+        }
+        const data = await User.updateOne(customFilter, req.body, { runValidators: true })
         res.status(202).send({
             error: false,
             data,

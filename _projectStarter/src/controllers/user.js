@@ -1,5 +1,6 @@
 "use strict"
 const { CustomError } = require("../errors/customError")
+const sendMail = require("../helpers/sendMail")
 /* -------------------------------------------------------
     NODEJS EXPRESS | CLARUSWAY FullStack Team
 ------------------------------------------------------- */
@@ -16,7 +17,9 @@ module.exports = {
     },
     //CRUD
     create: async (req, res) => {
+
         const data = await User.create(req.body)
+        sendMail(data.email, "Welcome", `<h1>Welcome ${data.username}</h1><p>Kaydınız Başarı ile oluşturuldu</p>`)
         res.status(201).send({
             error: false,
             data

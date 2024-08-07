@@ -24,6 +24,6 @@ const upload = multer({
 // router.route('/').get(pizza.list).post(isAdmin, upload.single("fileInputName"), pizza.create)
 // router.route('/').get(pizza.list).post(isAdmin, upload.single("image"), pizza.create)  tekli upload için
 router.route('/').get(pizza.list).post(isAdmin, upload.array("images", 10), pizza.create)  //çoklu upload için
-router.route('/:id').all(idValidation).get(pizza.read).put(isAdmin, pizza.update).patch(isAdmin, pizza.update).delete(isAdmin, pizza.delete)
+router.route('/:id').all(idValidation).get(pizza.read).put(isAdmin, upload.array("images"), pizza.update).patch(isAdmin, upload.array("images"), pizza.update).delete(isAdmin, pizza.delete)
 /* ------------------------------------------------------- */
 module.exports = router

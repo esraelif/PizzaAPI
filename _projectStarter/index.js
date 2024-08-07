@@ -47,6 +47,7 @@ app.use(express.json())
 //Accept FormData
 app.use(express.urlencoded({ extended: false }))
 
+
 // Logger:
 app.use(require('./src/middlewares/logging'))
 
@@ -150,6 +151,8 @@ app.all('/', (req, res) => {
 //* default yazmadığımızda kök route u esas alır.
 app.use('/', require('./src/routes/'))
 
+//Static Files
+app.use("/uploads", express.static("/uploads"))  //resim vb dosyalar static dosyalardır oyuzden express.static kullandık
 //* eşleşmeyen routeları yakalar
 app.use((req, res, next) => {
     res.status(404).send({

@@ -1,8 +1,10 @@
 "use strict"
+const sendMail = require("../helpers/sendMail")
 /* -------------------------------------------------------
     NODEJS EXPRESS | CLARUSWAY FullStack Team
 ------------------------------------------------------- */
 const Order = require("../models/order")
+const Pizza = require("../models/pizza")
 module.exports = {
     list: async (req, res) => {
         let customFilter = {}
@@ -24,6 +26,117 @@ module.exports = {
         }
 
         const data = await Order.create(req.body)
+        const pizzaData = await Pizza.findOne({ _id: data.pizzaId })
+        sendMail(req.user.email, "Order Create", `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #007BFF;
+            color: #ffffff;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content h1 {
+            margin-top: 0;
+        }
+        .content p {
+            line-height: 1.6;
+        }
+        .order-details {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .order-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-details table, .order-details th, .order-details td {
+            border: 1px solid #ddd;
+        }
+        .order-details th, .order-details td {
+            padding: 10px;
+            text-align: left;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            color: #777;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+        </div>
+        <div class="content">
+            <h2>Hello, ${data.username}!</h2>
+            <p>Thank you for your order. Here are the details of your recent purchase:</p>
+            <div class="order-details">
+                <table>
+                    <tr>
+                        <th>Order ID</th>
+                        <td>${data._id}</td>
+                    </tr>
+                    <tr>
+                        <th>Pizza</th>
+                        <td>${pizzaData.name}</td>
+                    </tr>
+                    <tr>
+                        <th>Size</th>
+                        <td>${data.size}</td>
+                    </tr>
+                    <tr>
+                        <th>Quantity</th>
+                        <td>${data.quantity}</td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td>${data.price}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Amount</th>
+                        <td>${data.amount}</td>
+                    </tr>
+                </table>
+            </div>
+            <p>If you have any questions, feel free to contact us.</p>
+            <p>Best regards,<br>The Pizza Shop Team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 The Pizza Shop. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+`,)
         res.status(201).send({
             error: false,
             data

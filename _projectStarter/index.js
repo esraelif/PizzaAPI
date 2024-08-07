@@ -44,6 +44,8 @@ dbConnection()
 
 // Accept JSON:
 app.use(express.json())
+//Accept FormData
+app.use(express.urlencoded({ extended: false }))
 
 // Logger:
 app.use(require('./src/middlewares/logging'))
@@ -85,7 +87,7 @@ app.use(require('./src/middlewares/queryHandler'))
 //*Sendmail
 // transporter.sendMail({
 //     from: '"Email1 👻" <zhv6x3yhyggs4gkc@ethereal.email>', // sender address
-//     to: "bar@example.com, baz@example.com,esraelifyeter@hotmail.com", // list of receivers
+//     to: "bar@example.com, baz@example.com,", // list of receivers
 //     subject: "Hello ✔", // Subject line
 //     text: "Hello world?", // plain text body
 //     html: "<b>Hello world?</b>", // html body
@@ -98,13 +100,13 @@ app.use(require('./src/middlewares/queryHandler'))
 // const transporter = nodemailer.createTransport({
 //     service: "gmail",
 //     auth: {
-//         user: "elifesratunca@gmail.com",
-//         pass: "laky oyiz uzfw rtyv",
+//         user: "gçndericinin emaili",
+//         pass: "google da uygula şifresinden aldık",
 //     },
 // });
 // transporter.sendMail({
-//     from: "elifesratunca@gmail.com",
-//     to: "elifesratunca@gmail.com,swifty.business.lol@gmail.com",
+//     from: "gondericinin emaili",
+//     to: "alıcının emaili",
 //     subject: "Hello",
 //     text: "Hello Kaan",
 //     html: "<b>Hi!</b>"
@@ -114,13 +116,13 @@ app.use(require('./src/middlewares/queryHandler'))
 // const transporter = nodemailer.createTransport({
 //     service: "gmail",
 //     auth: {
-//         user: "elifesratunca@gmail.com",
+//         user: "gonderenin emaili",
 //         pass: "mailşifresini yazmalısın",
 //     },
 // });
 // transporter.sendMail({
-//     from: "elifesratunca@gmail.com",
-//     to: "elifesratunca@gmail.com,swifty.business.lol@gmail.com",
+//     from: "gönderenin emaili",
+//     to: "alıcının emaili",
 //     subject: "Hello",
 //     text: "Hello Kaan",
 //     html: "<b>Hi!</b>"

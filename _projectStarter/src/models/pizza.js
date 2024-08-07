@@ -11,11 +11,16 @@ const PizzaSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    image: {
+    // image: {
+    //     type: String,
+    //     trim: true,
+
+    // },
+    image: [{
         type: String,
         trim: true,
 
-    },
+    }],
     prices: {
         type: Number,
         required: true,

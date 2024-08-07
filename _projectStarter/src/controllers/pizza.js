@@ -14,6 +14,14 @@ module.exports = {
     },
     //CRUD
     create: async (req, res) => {
+        console.log(req.file) //single dosya yakalama
+        console.log(req.files) // most dosya yakalama
+
+        if (req.files) {
+            const images = []
+            req.files.forEach(image => images.push("/uploads/" + image.fileName))
+            req.body.images = images
+        }
         const data = await Pizza.create(req.body)
         res.status(201).send({
             error: false,

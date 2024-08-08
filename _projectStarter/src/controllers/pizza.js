@@ -1,18 +1,34 @@
-"use strict"
+"use strict";
 /* -------------------------------------------------------
     NODEJS EXPRESS | CLARUSWAY FullStack Team
 ------------------------------------------------------- */
-const Pizza = require("../models/pizza")
+
+const Pizza = require("../models/pizza");
+const fs = require("node:fs")
+
 module.exports = {
     list: async (req, res) => {
-        const data = await res.getModelList(Pizza)
+        /*
+                #swagger.tags = ["Pizzas"]
+                #swagger.summary = "List Pizzas"
+                #swagger.description = `
+                    You can send query with endpoint for filter[], search[], sort[], page and limit.
+                    <ul> Examples:
+                        <li>URL/?<b>filter[field1]=value1&filter[field2]=value2</b></li>
+                        <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+                        <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+                        <li>URL/?<b>page=2&limit=1</b></li>
+                    </ul>
+                `
+            */
+        const data = await res.getModelList(Pizza);
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails,
-            data
-        })
+            data,
+        });
     },
-    //CRUD
+    //! CRUD(Create-Read-Update-Delete)
     create: async (req, res) => {
         /*
                 #swagger.tags = ["Pizzas"]
@@ -40,11 +56,15 @@ module.exports = {
         });
     },
     read: async (req, res) => {
-        const data = await Pizza.findOne({ _id: req.params.id })
+        /*
+                #swagger.tags = ["Pizzas"]
+                #swagger.summary = "Get Single Pizza"
+            */
+        const data = await Pizza.findOne({ _id: req.params.id });
         res.status(200).send({
             error: false,
-            data
-        })
+            data,
+        });
     },
     update: async (req, res) => {
         /*
@@ -107,12 +127,26 @@ module.exports = {
         });
     },
     delete: async (req, res) => {
-        const data = await Pizza.deleteOne({ _id: req.params.id })
-        res.status(data.deletedCount ? 204 : 404).send({
-            error: !data.deletedCount,
-            data,
-            message: "Pizza not found"
+        /*
+                #swagger.tags = ["Pizzas"]
+                #swagger.summary = "Delete Pizza"
+            */
+        // const data = await Pizza.deleteOne({ _id: req.params.id });
+        const data = await Pizza.findOneAndDelete({ _id: req.params.id });
+        // console.log(data);
+        //* silinen pizzanın resmininde durmasına gerek yok diyerek o resmi kayıtlarımızdan sildik.
+        if (data?.images) {
+            data?.images.forEach((image) => {
+                if (!image.startsWith("http")) {
+                    fs.unlink(`.${image}`, (err) => console.log(err));
+                }
+            });
         }
-        )
-    }
-}
+
+        res.status(data ? 204 : 404).send({
+            error: !data,
+            data,
+            message: "Pizza not found!",
+        });
+    },
+};
